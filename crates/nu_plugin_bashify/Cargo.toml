@@ -1,0 +1,16 @@
+[package]
+name = "nu_plugin_bashify"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "nu_plugin_bashify"
+bench = false
+
+[lib]
+bench = false
+
+[dependencies]
+nu-plugin.workspace = true
+nu-protocol.workspace = true
