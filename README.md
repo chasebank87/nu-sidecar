@@ -12,6 +12,59 @@ Two nushell plugins:
   output) is captured automatically and sent along as context, capped by
   size and optionally by `--last N` turns.
 
+## Usage
+
+**bashify** — just type bash the way you normally would. First Enter
+translates the line in place (doesn't run it yet); press Enter again,
+unedited, to actually run it:
+
+```
+❯ export FOO=bar && echo $FOO
+```
+press Enter once, and the line rewrites itself to:
+```
+❯ $env.FOO = "bar"; if $env.LAST_EXIT_CODE == 0 { echo $env.FOO }
+```
+press Enter again to run it:
+```
+bar
+```
+
+If you don't like the translation, just edit the line before pressing Enter
+again — it'll re-translate whatever you typed instead of running the stale
+suggestion. And if a line is already valid nu (or bashify doesn't recognize
+it), it just runs immediately on the first Enter, no extra step.
+
+**llmchat** — one-time setup, then `ask`/`plan` from any nushell session:
+
+```
+❯ llm setup
+nu-sidecar LLM setup
+Providers: 1) Ollama  2) LM Studio  3) OpenRouter  4) Hermes  5) OpenClaw
+Provider [1-5]: 1
+Base URL [http://127.0.0.1:11434]:
+Model: llama3.1
+API key (optional, press Enter to skip):
+Configured Ollama as the active provider. Try: ask "hello"
+
+❯ ls
+❯ cargo test
+❯ ask "why did that last test fail?"
+```
+
+`ask` and `plan` automatically pull in recent terminal activity (commands +
+their output) from the current session as context — no piping required.
+Use `--last N` to limit it to just the last N turns instead of the full
+session:
+
+```
+❯ ask "summarize what I've been doing" --last 5
+❯ plan "get this repo's tests passing"
+```
+
+`llm status` shows the active provider/model without printing the API key.
+Run `llm setup` again any time to switch providers or models.
+
 ## Install
 
 Requires Rust/cargo and a matching nushell version (currently pinned to
